@@ -41,6 +41,9 @@
 			whip: {
 				title: 'Whip Pan',
 				duration: 200,
+				transformFrom: null,
+				transformTo: null,
+				blur: null,
 				init: function () {
 					var blur = seriously.effect('directionblur'),
 						blend = seriously.effect('blend'),
@@ -69,15 +72,55 @@
 					this.blur.amount = 4 - Math.abs(amount - 0.5) * 6;
 				}
 			},
+			flash: {
+				title: 'Flash',
+				duration: 500,
+				linear: null,
+				blur: null,
+				select: null,
+				init: function () {
+					var blur = seriously.effect('blur'),
+						//linear = seriously.effect('linear-transfer'),
+						exposure = seriously.effect('exposure'),
+						select = seriously.effect('select', {
+							count: 2
+						});
+
+					blur.source = select;
+					exposure.source = blur;
+
+					this.blur = blur;
+					this.exposure = exposure;
+					this.select = select;
+				},
+				start: function (fromNode, toNode) {
+					this.select.source0 = fromNode;
+					this.select.source1 = toNode;
+					this.select.active = 0;
+
+					return this.exposure;
+				},
+				draw: function (amount) {
+					if (amount > 0.5) {
+						this.select.active = 1;
+					}
+
+					amount = 1 - 2 * Math.abs(amount - 0.5);
+					this.blur.amount = 0.8 * amount;
+					this.exposure.exposure = 4 * amount;
+				}
+			},
 			channel: {
 				title: 'Channel Change',
 				duration: 300,
+				volume: false,
 				tvProps: {
 					distortion: [0.02, 0.2],
 					lineSync: [0.03, 0.2],
 					verticalSync: [0, 1],
 					bars: [0.4, 0.6]
 				},
+				tvglitch: null,
 				init: function () {
 					var tvglitch = seriously.effect('tvglitch');
 
