@@ -29,7 +29,7 @@
 		//state
 		selectedIndex = -1,
 		transition,
-		activeTransition = 'whip',
+		activeTransition = 'flash',
 		transitionStart = 0,
 		previousVideo,
 		nextVideo,
