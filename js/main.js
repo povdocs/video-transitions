@@ -80,30 +80,25 @@
 				select: null,
 				init: function () {
 					var blur = seriously.effect('blur'),
-						//linear = seriously.effect('linear-transfer'),
 						exposure = seriously.effect('exposure'),
-						select = seriously.effect('select', {
-							count: 2
-						});
+						blend = seriously.effect('blend');
 
-					blur.source = select;
+					blur.source = blend;
 					exposure.source = blur;
 
 					this.blur = blur;
 					this.exposure = exposure;
-					this.select = select;
+					this.blend = blend;
 				},
 				start: function (fromNode, toNode) {
-					this.select.source0 = fromNode;
-					this.select.source1 = toNode;
-					this.select.active = 0;
+					this.blend.bottom = fromNode;
+					this.blend.top = toNode;
+					this.blend.opacity = 0;
 
 					return this.exposure;
 				},
 				draw: function (amount) {
-					if (amount > 0.5) {
-						this.select.active = 1;
-					}
+					this.blend.opacity = Math.min(1, Math.max(0, 1 - 8 * (0.5 - amount)));
 
 					amount = 1 - 2 * Math.abs(amount - 0.5);
 					this.blur.amount = 0.8 * amount;
