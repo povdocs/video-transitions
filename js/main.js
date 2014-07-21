@@ -6,11 +6,15 @@
 			return 0.5 * Math.pow(t * 2, 2);
 		}
 
-		return -0.5 * (Math.pow(Math.abs(t * 2 - 2), 2) - 2);
+		return -0.5 * (Math.pow(abs(t * 2 - 2), 2) - 2);
 	}
 
 	var document = window.document,
 		Seriously = window.Seriously,
+
+		min = Math.min,
+		abs = Math.abs,
+		max = Math.max,
 
 		formats = [
 			//'mp4',
@@ -40,7 +44,7 @@
 		transitions = {
 			whip: {
 				title: 'Whip Pan',
-				duration: 200,
+				duration: 250,
 				transformFrom: null,
 				transformTo: null,
 				blur: null,
@@ -66,10 +70,11 @@
 					return this.blur;
 				},
 				draw: function (amount) {
+					//this.blur.amount = 1 - 2 * abs(amount - 0.5);
 					amount = easeInOut(amount);
 					this.transformFrom.translateX = this.transformFrom.width * amount;
 					this.transformTo.translateX = -this.transformTo.width * (1 - amount);
-					this.blur.amount = 4 - Math.abs(amount - 0.5) * 6;
+					this.blur.amount = min(1, 1.2 * (1 - 2 * abs(amount - 0.5)) + 0.2);
 				}
 			},
 			flash: {
@@ -98,9 +103,9 @@
 					return this.exposure;
 				},
 				draw: function (amount) {
-					this.blend.opacity = Math.min(1, Math.max(0, 1 - 8 * (0.5 - amount)));
+					this.blend.opacity = min(1, max(0, 1 - 8 * (0.5 - amount)));
 
-					amount = 1 - 2 * Math.abs(amount - 0.5);
+					amount = 1 - 2 * abs(amount - 0.5);
 					this.blur.amount = 0.8 * amount;
 					this.exposure.exposure = 4 * amount;
 				}
@@ -141,8 +146,8 @@
 						tvglitch = this.tvglitch;
 
 					factor = 1 - amount;
-					factor = Math.max(factor, 0);
-					factor = Math.min(factor, 1);
+					factor = max(factor, 0);
+					factor = min(factor, 1);
 					factor = Math.pow(factor, 2);
 
 					for (key in tvProps) {
@@ -262,7 +267,7 @@
 	seriously.go(function () {
 		var progress;
 		if (transitionStart) {
-			progress = Math.max(Date.now() - transitionStart, 0) / transition.duration;
+			progress = max(Date.now() - transitionStart, 0) / transition.duration;
 
 			if (progress >= 1) {
 				transitionStart = 0;
@@ -273,9 +278,9 @@
 			} else {
 				if (transition.volume !== false) {
 					if (previousVideo) {
-						previousVideo.volume = Math.min(1, Math.max(0, 1 - progress));
+						previousVideo.volume = min(1, max(0, 1 - progress));
 					}
-					nextVideo.volume = Math.min(1, Math.max(0, progress));
+					nextVideo.volume = min(1, max(0, progress));
 				} else {
 					previousVideo.volume = 0;
 					nextVideo.volume = 1;
