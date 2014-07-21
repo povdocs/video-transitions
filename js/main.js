@@ -181,13 +181,13 @@
 
 			video.type = type;
 			video.src = 'http://localhost:8888/video-transitions/video/' + source + '-hd.' + format + '#t=20,';
-			video.crossOrigin = 'anonymous'
+			video.crossOrigin = 'anonymous';
 			video.preload = 'auto';
 			video.id = 'video' + index;
 			video.loop = true;
 			video.controls = true; //for debugging
 
-			//debug
+			//debug?
 			video.onloadedmetadata = function () {
 				video.currentTime = Math.random() * video.duration;
 			};
@@ -233,10 +233,15 @@
 					previousVideo.pause();
 				}
 			} else {
-				if (previousVideo) {
-					previousVideo.volume = Math.min(1, Math.max(0, 1 - progress));
+				if (transition.volume !== false) {
+					if (previousVideo) {
+						previousVideo.volume = Math.min(1, Math.max(0, 1 - progress));
+					}
+					nextVideo.volume = Math.min(1, Math.max(0, progress));
+				} else {
+					previousVideo.volume = 0;
+					nextVideo.volume = 1;
 				}
-				nextVideo.volume = Math.min(1, Math.max(0, progress));
 
 				transition.draw(progress);
 			}
