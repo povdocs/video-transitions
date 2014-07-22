@@ -267,7 +267,7 @@
 				button;
 
 			video.type = type;
-			video.src = 'http://localhost:8888/video-transitions/video/' + source + '-' + size + '.' + format;
+			video.src = '/video/' + source + '-' + size + '.' + format;
 			video.crossOrigin = 'anonymous';
 			video.preload = 'auto';
 			video.id = 'video' + index;
