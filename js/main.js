@@ -198,10 +198,23 @@
 				transitions[key].init();
 			}
 		}
+
+		videos.forEach(function (obj) {
+			var video = obj.element,
+				reformat = seriously.transform('reformat'),
+				button;
+
+			reformat.width = canvas.width;
+			reformat.height = canvas.height;
+			reformat.source = video;
+			reformat.mode = 'cover';
+
+			obj.reformat = reformat;
+		});
 	}
 
 	function switchVideo(index) {
-		if (selectedIndex === index || index >= videos.length) {
+		if (!seriously || selectedIndex === index || index >= videos.length) {
 			//no change, nothing to do here
 			return;
 		}
@@ -217,6 +230,66 @@
 		selectedIndex = index;
 		nextVideo = videos[selectedIndex].element;
 		nextVideo.play();
+	}
+
+	function draw() {
+		var progress;
+		if (transitionStart) {
+			progress = max(Date.now() - transitionStart, 0) / transition.duration;
+
+			if (progress >= 1) {
+				transitionStart = 0;
+				target.source = videos[selectedIndex].reformat;
+				if (previousVideo) {
+					previousVideo.pause();
+				}
+			} else {
+				if (transition.volume !== false) {
+					if (previousVideo) {
+						previousVideo.volume = min(1, max(0, 1 - progress));
+					}
+					nextVideo.volume = min(1, max(0, progress));
+				} else {
+					previousVideo.volume = 0;
+					nextVideo.volume = 1;
+				}
+
+				transition.draw(progress);
+			}
+		}
+	}
+
+	function start() {
+		var i;
+
+		if (seriously) {
+			return;
+		}
+
+		for (i = 0; i < videos.length; i++) {
+			if (!videos[i].element.readyState) {
+				return;
+			}
+		}
+
+		initSeriously();
+		resize();
+		seriously.go(draw);
+		switchVideo(0);
+	}
+
+	function forcePlay() {
+		videos.forEach(function (v) {
+			var pause;
+			if (!v.element.readyState) {
+				pause = v.element.paused;
+				v.element.play();
+				if (pause) {
+					v.element.pause();
+				}
+			}
+		});
+		document.body.removeEventListener('touchstart', forcePlay, true);
 	}
 
 	function loadVideos() {
@@ -259,11 +332,8 @@
 			return;
 		}
 
-		initSeriously();
-
 		videoSources.forEach(function (source, index) {
 			var video = document.createElement('video'),
-				reformat = seriously.transform('reformat'),
 				button;
 
 			video.type = type;
@@ -277,12 +347,8 @@
 			//debug?
 			video.onloadedmetadata = function () {
 				video.currentTime = Math.random() * video.duration;
+				start();
 			};
-
-			reformat.width = canvas.width;
-			reformat.height = canvas.height;
-			reformat.source = video;
-			reformat.mode = 'cover';
 
 			document.body.appendChild(video);
 
@@ -293,7 +359,7 @@
 
 			videos.push({
 				element: video,
-				reformat: reformat
+				reformat: null
 			});
 		});
 	}
@@ -337,34 +403,6 @@
 
 	transition = transitions[activeTransition];
 	loadVideos();
-	resize();
-	seriously.go(function () {
-		var progress;
-		if (transitionStart) {
-			progress = max(Date.now() - transitionStart, 0) / transition.duration;
-
-			if (progress >= 1) {
-				transitionStart = 0;
-				target.source = videos[selectedIndex].reformat;
-				if (previousVideo) {
-					previousVideo.pause();
-				}
-			} else {
-				if (transition.volume !== false) {
-					if (previousVideo) {
-						previousVideo.volume = min(1, max(0, 1 - progress));
-					}
-					nextVideo.volume = min(1, max(0, progress));
-				} else {
-					previousVideo.volume = 0;
-					nextVideo.volume = 1;
-				}
-
-				transition.draw(progress);
-			}
-		}
-	});
-	switchVideo(0);
 
 	document.getElementById('transition').addEventListener('change', function () {
 		activeTransition = this.value;
@@ -378,6 +416,8 @@
 
 	window.addEventListener('orientationchange', resize);
 	window.addEventListener('resize', resize);
+
+	document.body.addEventListener('touchstart', forcePlay, true);
 
 	/*
 	window.addEventListener('keyup', function(evt) {
