@@ -1,0 +1,4 @@
+[submodule "js/lib/Seriously.js"]
+	path = js/lib/Seriously.js
+	url = git@github.com:brianchirls/Seriously.js.git
+	branch = develop
