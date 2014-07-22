@@ -9,6 +9,27 @@
 		return -0.5 * (Math.pow(abs(t * 2 - 2), 2) - 2);
 	}
 
+	function debounce(func, wait) {
+		var timeout,
+			lastRun = 0;
+
+		return function() {
+			var context = this, args = arguments;
+
+			if (Date.now() - lastRun >= wait) {
+				lastRun = Date.now();
+				func.apply(context, args);
+			} else {
+				clearTimeout(timeout);
+				timeout = setTimeout(function() {
+					timeout = null;
+					func.apply(context, args);
+					lastRun = Date.now();
+				}, wait);
+			}
+		};
+	}
+
 	var document = window.document,
 		Seriously = window.Seriously,
 
@@ -17,7 +38,7 @@
 		max = Math.max,
 
 		formats = [
-			//'mp4',
+			'mp4',
 			'webm'
 		],
 		videoSources = [
@@ -27,8 +48,13 @@
 		],
 		videos = [],
 
+		videoWidth = 1280,
+		videoHeight = 720,
+
 		seriously,
 		target,
+
+		resize,
 
 		//state
 		selectedIndex = -1,
@@ -197,9 +223,27 @@
 		var i,
 			format,
 			type,
-			vid;
+			vid,
+			maxDim,
+			size = 'hd';
 
 		vid = document.createElement('video');
+
+		/*
+		Make our best guess about the appropriate video size
+		*/
+		maxDim = Math.max(screen.width, screen.height);
+		if (window.matchMedia('handheld').matches || maxDim < 1280) {
+			if (maxDim * (window.devicePixelRatio || 1) < 960) {
+				size = 'small';
+				videoWidth = 640;
+				videoHeight = 360;
+			} else {
+				size = 'mid';
+				videoWidth = 960;
+				videoHeight = 540;
+			}
+		}
 
 		for (i = 0; i < formats.length; i++) {
 			type = 'video/' + formats[i];
@@ -223,7 +267,7 @@
 				button;
 
 			video.type = type;
-			video.src = 'http://localhost:8888/video-transitions/video/' + source + '-hd.' + format + '#t=20,';
+			video.src = 'http://localhost:8888/video-transitions/video/' + source + '-' + size + '.' + format;
 			video.crossOrigin = 'anonymous';
 			video.preload = 'auto';
 			video.id = 'video' + index;
@@ -262,8 +306,38 @@
 		}
 	}
 
+	resize = debounce(function () {
+		var width = Math.min(videoWidth, window.innerWidth),
+			height = Math.min(videoHeight, window.innerHeight);
+
+		if (width / height < 16 / 9) {
+			height = width * 9 / 16;
+		}
+
+		canvas.style.width = width + 'px';
+		canvas.style.height = height + 'px';
+
+		/*
+		If it's a big enough screen and we have a retina display, let's take advantage.
+		We assume that the GPU will be able to handle it
+		*/
+		if (window.screen.width * window.devicePixelRatio > videoWidth) {
+			width *= window.devicePixelRatio;
+			height *= window.devicePixelRatio;
+		}
+
+		canvas.width = width;
+		canvas.height = height;
+
+		videos.forEach(function (obj) {
+			obj.reformat.width = width;
+			obj.reformat.height = height;
+		});
+	}, 30, true);
+
 	transition = transitions[activeTransition];
 	loadVideos();
+	resize();
 	seriously.go(function () {
 		var progress;
 		if (transitionStart) {
@@ -301,6 +375,9 @@
 	document.addEventListener('mozvisibilitychange', visibilityChange);
 	document.addEventListener('msvisibilitychange', visibilityChange);
 	document.addEventListener('webkitvisibilitychange', visibilityChange);
+
+	window.addEventListener('orientationchange', resize);
+	window.addEventListener('resize', resize);
 
 	/*
 	window.addEventListener('keyup', function(evt) {

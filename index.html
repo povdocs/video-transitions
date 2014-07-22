@@ -17,29 +17,9 @@
 				padding: 0px;
 			}
 
-			#layout {
-				display: inline-block;
-				position: absolute;
-				top: 0px;
-				right: 0px;
-				bottom: 0px;
-				left: 0px;
-				margin: auto;
-				max-width: 100%;
-				max-height: 100%;
+			#video-container.mid {
 				width: 960px;
 				height: 540px;
-			}
-
-			#video-container {
-				position: relative;
-				margin: 0 auto;
-				width: 960px;
-				height: 540px;
-				overflow: hidden;
-				/*border: #676767 solid 1px;*/
-				background-color: '#D1D1D1';
-				box-shadow: 0px 0px 15px rgb(0, 0, 0)
 			}
 
 			#video-container > * {
@@ -57,36 +37,42 @@
 			}
 
 			#canvas {
-				position: absolute;
+				background-color: '#D1D1D1';
+				box-shadow: 0px 0px 15px rgb(0, 0, 0);
 
+				position: absolute;
+				top: 0px;
+				right: 0px;
+				bottom: 0px;
+				left: 0px;
+				margin: auto;
 			}
 
 			input[type=range] {
 				width: 400px;
 			}
 
-			.controls {
+			#controls {
 				background-color: lightgrey;
 				display: inline-block;
 				border: darkgrey solid 1px;
 				padding: 12px;
+				position: absolute;
+				bottom: 0;
 			}
 
 		</style>
 	</head>
 	<body>
-		<div id="layout">
-			<div id="video-container">
-				<canvas id="canvas" width="960" height="540"></canvas>
-			</div>
-			<div id="controls">
-				<select id="transition">
-					<option value="flash" selected>Flash</option>
-					<option value="whip">Whip Pan</option>
-					<option value="channel">Channel Change</option>
-				</select>
-			</div>
+		<canvas id="canvas" width="1280" height="720"></canvas>
+		<div id="controls">
+			<select id="transition">
+				<option value="flash" selected>Flash</option>
+				<option value="whip">Whip Pan</option>
+				<option value="channel">Channel Change</option>
+			</select>
 		</div>
+
 		<script type="text/javascript" src="js/lib/Seriously.js/seriously.js"></script>
 		<script type="text/javascript" src="js/lib/Seriously.js/effects/seriously.directionblur.js"></script>
 		<script type="text/javascript" src="js/lib/Seriously.js/effects/seriously.blend.js"></script>
