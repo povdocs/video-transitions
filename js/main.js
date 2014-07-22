@@ -267,7 +267,7 @@
 				button;
 
 			video.type = type;
-			video.src = '/video/' + source + '-' + size + '.' + format;
+			video.src = 'http://video.chirls.com/' + source + '-' + size + '.' + format;
 			video.crossOrigin = 'anonymous';
 			video.preload = 'auto';
 			video.id = 'video' + index;
