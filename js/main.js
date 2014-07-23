@@ -63,9 +63,11 @@
 		transitionStart = 0,
 		previousVideo,
 		nextVideo,
+		playing = false,
 
 		canvas = document.getElementById('canvas'),
 		controls = document.getElementById('controls'),
+		bigbutton = document.getElementById('bigbutton'),
 
 		transitions = {
 			whip: {
@@ -213,6 +215,35 @@
 		});
 	}
 
+	function updateButtonState() {
+		bigbutton.className = playing ? 'playing' : 'paused';
+	}
+
+	function play() {
+		if (nextVideo) {
+			nextVideo.play();
+			playing = !nextVideo.paused;
+		}
+		updateButtonState();
+	}
+
+	function pause() {
+		var i;
+		playing = false;
+		for (i = 0; i < videos.length; i++) {
+			videos[i].element.pause();
+		}
+		updateButtonState();
+	}
+
+	function togglePlay() {
+		if (playing) {
+			pause();
+		} else {
+			play();
+		}
+	}
+
 	function switchVideo(index) {
 		if (!seriously || selectedIndex === index || index >= videos.length) {
 			//no change, nothing to do here
@@ -229,7 +260,9 @@
 
 		selectedIndex = index;
 		nextVideo = videos[selectedIndex].element;
-		nextVideo.play();
+		if (playing) {
+			nextVideo.play();
+		}
 	}
 
 	function draw() {
@@ -276,20 +309,7 @@
 		resize();
 		seriously.go(draw);
 		switchVideo(0);
-	}
-
-	function forcePlay() {
-		videos.forEach(function (v) {
-			var pause;
-			if (!v.element.readyState) {
-				pause = v.element.paused;
-				v.element.play();
-				if (pause) {
-					v.element.pause();
-				}
-			}
-		});
-		document.body.removeEventListener('touchstart', forcePlay, true);
+		play();
 	}
 
 	function loadVideos() {
@@ -362,6 +382,8 @@
 				reformat: null
 			});
 		});
+
+		updateButtonState();
 	}
 
 	function visibilityChange() {
@@ -417,19 +439,16 @@
 	window.addEventListener('orientationchange', resize);
 	window.addEventListener('resize', resize);
 
-	document.body.addEventListener('touchstart', forcePlay, true);
+	canvas.addEventListener('click', togglePlay);
+	bigbutton.addEventListener('click', togglePlay);
 
-	/*
 	window.addEventListener('keyup', function(evt) {
 		if (evt.which === 32) {
-			if (video.paused) {
-				video.play();
-			} else {
-				video.pause();
-			}
+			togglePlay();
 		}
 	}, true);
 
+	/*
 	window.addEventListener('keydown', function(evt) {
 		if (video.paused) {
 			if (evt.which === 37) {
