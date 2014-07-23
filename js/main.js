@@ -68,6 +68,8 @@
 		canvas = document.getElementById('canvas'),
 		controls = document.getElementById('controls'),
 		bigbutton = document.getElementById('bigbutton'),
+		infobutton = document.getElementById('infobutton'),
+		info = document.getElementById('info'),
 
 		transitions = {
 			whip: {
@@ -363,6 +365,7 @@
 			video.id = 'video' + index;
 			video.loop = true;
 			video.controls = true; //for debugging
+			video.muted = true;
 
 			//debug?
 			video.onloadedmetadata = function () {
@@ -389,7 +392,7 @@
 	function visibilityChange() {
 		if (document.hidden || document.mozHidden || document.msHidden || document.webkitHidden) {
 			videos[selectedIndex].element.pause();
-		} else {
+		} else if (playing) {
 			videos[selectedIndex].element.play();
 		}
 	}
@@ -447,6 +450,14 @@
 			togglePlay();
 		}
 	}, true);
+
+	infobutton.addEventListener('click', function () {
+		if (info.className) {
+			info.className = '';
+		} else {
+			info.className = 'open';
+		}
+	});
 
 	/*
 	window.addEventListener('keydown', function(evt) {
