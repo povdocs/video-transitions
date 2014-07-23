@@ -389,7 +389,7 @@
 	function visibilityChange() {
 		if (document.hidden || document.mozHidden || document.msHidden || document.webkitHidden) {
 			videos[selectedIndex].element.pause();
-		} else {
+		} else if (playing) {
 			videos[selectedIndex].element.play();
 		}
 	}
