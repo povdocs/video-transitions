@@ -365,7 +365,6 @@
 			video.id = 'video' + index;
 			video.loop = true;
 			video.controls = true; //for debugging
-			video.muted = true;
 
 			//debug?
 			video.onloadedmetadata = function () {
