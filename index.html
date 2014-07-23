@@ -37,7 +37,7 @@
 			}
 
 			#canvas {
-				background-color: '#D1D1D1';
+				background-color: #D1D1D1;
 				box-shadow: 0px 0px 15px rgb(0, 0, 0);
 
 				position: absolute;
@@ -46,6 +46,30 @@
 				bottom: 0px;
 				left: 0px;
 				margin: auto;
+				cursor: pointer;
+			}
+
+			#bigbutton {
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				margin: -200px 0 0 -150px;
+				width: 100px;
+				height: 100px;
+				cursor: pointer;
+				fill: rgba(200, 200, 200, 0.5);
+				padding: 100px;
+			}
+
+			#bigbutton > svg {
+				display: none;
+				width: 100%;
+				height: 100%;
+			}
+
+			#bigbutton.playing:hover > #pause,
+			#bigbutton.paused > #play {
+				display: inline;
 			}
 
 			input[type=range] {
@@ -65,6 +89,38 @@
 	</head>
 	<body>
 		<canvas id="canvas" width="1280" height="720"></canvas>
+		<div id="bigbutton">
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+				 width="40.007px" height="40.007px" viewBox="0 0 40.007 40.007" style="enable-background:new 0 0 40.007 40.007;"
+				 xml:space="preserve"
+				 id="play">
+				<g>
+					<g>
+						<path d="M37.324,10.004c-5.522-9.566-17.755-12.844-27.32-7.32C0.438,8.206-2.84,20.438,2.684,30.004
+							c5.522,9.565,17.754,12.843,27.32,7.32C39.569,31.801,42.848,19.569,37.324,10.004z M28.004,33.859
+							c-7.652,4.419-17.438,1.797-21.856-5.856c-4.419-7.652-1.796-17.438,5.856-21.855c7.652-4.419,17.438-1.797,21.856,5.856
+							C38.278,19.656,35.656,29.441,28.004,33.859z M27.204,19.191l-10.473-6.108c-0.954-0.557-1.724-0.112-1.719,0.992l0.054,12.124
+							c0.005,1.104,0.784,1.553,1.741,1l10.393-6C28.156,20.647,28.158,19.748,27.204,19.191z"/>
+					</g>
+				</g>
+			</svg>
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+				 width="40.007px" height="40.007px" viewBox="0 0 40.007 40.007" style="enable-background:new 0 0 40.007 40.007;"
+				 xml:space="preserve"
+				 id="pause">
+				<g>
+					<g>
+						<path d="M16.004,14.004c-1.104,0-2,0.895-2,2v7.999c0,1.104,0.896,2,2,2s2-0.896,2-2v-7.999
+							C18.004,14.898,17.108,14.004,16.004,14.004z M37.324,10.004c-5.522-9.566-17.755-12.844-27.32-7.32
+							C0.438,8.206-2.84,20.438,2.684,30.004c5.522,9.565,17.754,12.843,27.32,7.32C39.569,31.801,42.847,19.569,37.324,10.004z
+							 M28.004,33.859c-7.652,4.419-17.438,1.797-21.856-5.856c-4.419-7.652-1.796-17.438,5.856-21.855
+							c7.652-4.419,17.438-1.797,21.856,5.856C38.278,19.656,35.656,29.441,28.004,33.859z M24.004,14.004c-1.104,0-2,0.895-2,2v7.999
+							c0,1.104,0.896,2.001,2,2.001s2-0.896,2-2.001v-7.999C26.004,14.898,25.108,14.004,24.004,14.004z"/>
+					</g>
+				</g>
+			</svg>
+
+		</div>
 		<div id="controls">
 			<select id="transition">
 				<option value="flash" selected>Flash</option>
