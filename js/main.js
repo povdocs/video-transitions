@@ -358,7 +358,7 @@
 				button;
 
 			video.type = type;
-			video.src = 'http://video.chirls.com/' + source + '-' + size + '.' + format;
+			video.src = '//pov-tc.pbs.org/pov/flv/2014/' + source + '-' + size + '.' + format;
 			video.crossOrigin = 'anonymous';
 			video.preload = 'auto';
 			video.id = 'video' + index;
