@@ -6,7 +6,7 @@
 			return 0.5 * Math.pow(t * 2, 2);
 		}
 
-		return -0.5 * (Math.pow(abs(t * 2 - 2), 2) - 2);
+		return -0.5 * (Math.pow(Math.abs(t * 2 - 2), 2) - 2);
 	}
 
 	function debounce(func, wait) {
@@ -205,8 +205,7 @@
 
 		videos.forEach(function (obj) {
 			var video = obj.element,
-				reformat = seriously.transform('reformat'),
-				button;
+				reformat = seriously.transform('reformat');
 
 			reformat.width = canvas.width;
 			reformat.height = canvas.height;
@@ -374,8 +373,9 @@
 
 			document.body.appendChild(video);
 
-			button = document.createElement('button'); //todo: use a span or img
-			button.appendChild(document.createTextNode(source)); //todo: pick a real name or image
+			button = document.createElement('span');
+			button.style.backgroundImage = 'url(images/' + source + '.jpg)';
+			//button.appendChild(document.createTextNode(source)); //todo: pick a real name or image
 			button.addEventListener('click', switchVideo.bind(null, index), false);
 			controls.appendChild(button);
 
@@ -428,10 +428,18 @@
 	transition = transitions[activeTransition];
 	loadVideos();
 
-	document.getElementById('transition').addEventListener('change', function () {
-		activeTransition = this.value;
-		transition = transitions[activeTransition];
+	Object.keys(transitions).forEach(function (t) {
+		var button = document.getElementById(t);
+		transitions[t].button = button;
+
+		button.addEventListener('click', function () {
+			transitions[activeTransition].button.className = '';
+			activeTransition = t;
+			transition = transitions[activeTransition];
+			button.className = 'active';
+		});
 	});
+	document.getElementById(activeTransition).className = 'active';
 
 	document.addEventListener('visibilitychange', visibilityChange);
 	document.addEventListener('mozvisibilitychange', visibilityChange);
