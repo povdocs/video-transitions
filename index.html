@@ -8,6 +8,7 @@
 		<style>
 			body {
 				font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				color: #eee;
 				overflow: hidden;
 				background: rgb(40, 40, 40);
 
@@ -79,12 +80,62 @@
 			}
 
 			#controls {
-				background-color: lightgrey;
-				display: inline-block;
-				border: darkgrey solid 1px;
+				background-color: #373636;
 				padding: 12px;
 				position: absolute;
 				bottom: 0;
+				left: 50%;
+				width: 800px;
+				margin-left: -400px;
+				box-shadow: 0px 0px 15px rgb(0, 0, 0);
+				-webkit-transform-origin: bottom center;
+				-moz-transform-origin: bottom center;
+				transform-origin: bottom center;
+			}
+
+			@media (max-width: 800px) {
+				#controls {
+					-webkit-transform: scale(0.5);
+					-moz-transform: scale(0.5);
+					transform: scale(0.5);
+				}
+			}
+
+			@media (max-width: 400px) {
+				#controls {
+					-webkit-transform: scale(0.4);
+					-moz-transform: scale(0.4);
+					transform: scale(0.4);
+				}
+			}
+
+			#controls > div {
+				display: inline;
+			}
+
+			#controls span {
+				margin: 0 6px;
+				width: 115px;
+				height: 95px;
+				display: inline-block;
+				cursor: pointer;
+				opacity: 0.6;
+				background-position: center;
+				background-color: rgba(0, 0, 0, 0.3);
+
+				text-align: center;
+				vertical-align: middle;
+				padding-top: 30px;
+				box-sizing: border-box;
+			}
+
+			#controls span.active {
+				color: #fff;
+				background-color: black;
+			}
+
+			#controls > span:hover {
+				opacity: 1;
 			}
 
 			#info {
@@ -109,7 +160,6 @@
 				width: 350px;
 
 				font-size: 14px;
-				color: #eee;
 				text-shadow: 0 1px 0 rgba( 255,255,255,.2 ), 0 -1px 0 rgba( 0,0,0,.2 );
 			}
 
@@ -172,11 +222,12 @@
 
 		</div>
 		<div id="controls">
-			<select id="transition">
-				<option value="flash" selected>Flash</option>
-				<option value="whip">Whip Pan</option>
-				<option value="channel">Channel Change</option>
-			</select>
+			<div>
+				<span id="flash">Flash</span>
+				<span id="whip">Whip Pan</span>
+				<span id="channel">Channel Change</span>
+				<span id="divider" style="width: 2px; cursor: auto"></span>
+			</div>
 		</div>
 		<div id="info">
 			<svg version="1.1" id="infobutton" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
