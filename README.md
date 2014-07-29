@@ -2,6 +2,33 @@
 
 This is an example of using [Seriously.js](http://github.com/brianchirls/Seriously.js) to generate real-time transition effects between two different video clips.
 
+## Transitions
+
+### Whip Pan
+
+Seen in old kung fu movies and in the work of [Paul Thomas Anderson](https://www.youtube.com/watch?v=ihp4T6PLlXE) and [Edgar Wright](https://www.youtube.com/watch?v=MeJzHSxRq40). It's usually done in camera, but this is a fake version. Both video clips are moved quickly from right to left while applying a large directional blur.
+
+#### Effects used:
+- 2d Transform
+- [Directional Blur](http://brianchirls.github.io/Seriously.js/examples/blur/directionblur.html)
+- [Blend](http://brianchirls.github.io/Seriously.js/examples/blend/)
+
+### TV Channel Change
+
+Uses the analog TV Glitch effect with all the settings starting off near the maximum and dropping to zero linearly over 300 milliseconds. Unlike the other transitions, this is an abrupt cut with no cross-fade.
+
+#### Effects used:
+- TV Glitch
+
+### Flash or Exposure Bloom
+
+For the first half of the transition, both blur and exposure are increased to the maximum. Then we quickly cross-fade to the second video and blur and exposure are gradually brought back down to zero.
+
+#### Effects used:
+- Exposure
+- [Gaussian Blur](http://brianchirls.github.io/Seriously.js/examples/blur/blur.html)
+- Blend
+
 ## Technology and Browser Support
 This demo requires certain web technologies that may not be available on all browsers
 
