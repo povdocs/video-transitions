@@ -1,6 +1,10 @@
 (function (window) {
 	'use strict';
 
+	/*
+	Timing function for smoothly animated transitions.
+	Linear timing is too abrupt at edges.
+	*/
 	function easeInOut(t) {
 		if (t < 0.5) {
 			return 0.5 * Math.pow(t * 2, 2);
@@ -9,6 +13,11 @@
 		return -0.5 * (Math.pow(Math.abs(t * 2 - 2), 2) - 2);
 	}
 
+	/*
+	Keeps a function from running too frequently in case it's too slow.
+	We use it for resizing, which takes too long to be run every time
+	the event fires when the user is dragging to resize the window.
+	*/
 	function debounce(func, wait) {
 		var timeout,
 			lastRun = 0;
@@ -71,6 +80,12 @@
 		infobutton = document.getElementById('infobutton'),
 		info = document.getElementById('info'),
 
+		/*
+		Each transition has its own callback functions:
+		- init - set up the required effect nodes
+		- start - attach the effect nodes to the video sources being transitioned
+		- draw - runs every frame of the transition
+		*/
 		transitions = {
 			whip: {
 				title: 'Whip Pan',
@@ -266,6 +281,11 @@
 		}
 	}
 
+	/*
+	Runs repeatedly as long as the web page is visible, approximately every 16 milliseconds.
+	Only does work while the transition is running, handles timing of the animation
+	and volume cross-fade.
+	*/
 	function draw() {
 		var progress;
 		if (transitionStart) {
@@ -365,7 +385,11 @@
 			video.loop = true;
 			video.controls = true; //for debugging
 
-			//debug?
+			/*
+			Start every video at a random time. They all have a similar bumper at the
+			beginning, so the transitions don't make for an effective demo if the videos
+			all look the same.
+			*/
 			video.onloadedmetadata = function () {
 				video.currentTime = Math.random() * video.duration;
 				start();
@@ -375,7 +399,6 @@
 
 			button = document.createElement('span');
 			button.style.backgroundImage = 'url(images/' + source + '.jpg)';
-			//button.appendChild(document.createTextNode(source)); //todo: pick a real name or image
 			button.addEventListener('click', switchVideo.bind(null, index), false);
 			controls.appendChild(button);
 
@@ -388,6 +411,10 @@
 		updateButtonState();
 	}
 
+	/*
+	Pause the video when this browser tab is in the background or minimized.
+	Resume when it comes back in focus, but only if the user didn't pause manually.
+	*/
 	function visibilityChange() {
 		if (document.hidden || document.mozHidden || document.msHidden || document.webkitHidden) {
 			videos[selectedIndex].element.pause();
@@ -452,6 +479,9 @@
 	canvas.addEventListener('click', togglePlay);
 	bigbutton.addEventListener('click', togglePlay);
 
+	/*
+	User can press the space bar to toggle pause/play
+	*/
 	window.addEventListener('keyup', function(evt) {
 		if (evt.which === 32) {
 			togglePlay();
@@ -465,16 +495,4 @@
 			info.className = 'open';
 		}
 	});
-
-	/*
-	window.addEventListener('keydown', function(evt) {
-		if (video.paused) {
-			if (evt.which === 37) {
-				video.currentTime = video.currentTime - 1 / FRAME_RATE;
-			} else if (evt.which === 39) {
-				video.currentTime = video.currentTime + 1 / FRAME_RATE;
-			}
-		}
-	}, true);
-	*/
 }(this));
