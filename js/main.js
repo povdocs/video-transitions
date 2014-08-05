@@ -133,8 +133,8 @@
 						exposure = seriously.effect('exposure'),
 						blend = seriously.effect('blend');
 
-					blur.source = blend;
-					exposure.source = blur;
+					blur.source = exposure;
+					exposure.source = blend;
 
 					this.blur = blur;
 					this.exposure = exposure;
@@ -145,7 +145,7 @@
 					this.blend.top = toNode;
 					this.blend.opacity = 0;
 
-					return this.exposure;
+					return this.blur;
 				},
 				draw: function (amount) {
 					this.blend.opacity = min(1, max(0, 1 - 8 * (0.5 - amount)));
