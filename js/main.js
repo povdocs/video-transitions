@@ -152,7 +152,7 @@
 
 					amount = 1 - 2 * abs(amount - 0.5);
 					this.blur.amount = 0.8 * amount;
-					this.exposure.exposure = 4 * amount;
+					this.exposure.exposure = 6 * amount;
 				}
 			},
 			channel: {
@@ -390,10 +390,11 @@
 			beginning, so the transitions don't make for an effective demo if the videos
 			all look the same.
 			*/
-			video.onloadedmetadata = function () {
+			video.addEventListener('loadedmetadata', function () {
 				video.currentTime = Math.random() * video.duration;
 				start();
-			};
+			}, false);
+			video.load();
 
 			document.body.appendChild(video);
 
